@@ -1,0 +1,14 @@
+# فعّل الأسطر دي لما كل عضو يديك الـ GitHub username بتاعه، واستبدل @username.
+# (لو فعلتها بأسماء غلط GitHub بيتجاهلها وبيطلع تحذير في الـ UI.)
+#
+# *                               @mostafa-username
+# /docs/DATA_MODEL.md             @mostafa-username @monzer-username
+# /core/candidate_generator.py    @monzer-username
+# /core/crossing_detector.py      @monzer-username
+# /core/degree_validator.py       @ebrahim-username
+# /core/connectivity_checker.py   @ebrahim-username
+# /core/solution_validator.py     @ebrahim-username
+# /algorithms/backtracking.py     @ebrahim-username
+# /algorithms/genetic.py          @rovan-username
+# /algorithms/memetic.py          @febronia-username
+# /frontend/                      @febronia-username

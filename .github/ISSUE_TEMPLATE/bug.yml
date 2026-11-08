@@ -1,0 +1,21 @@
+name: Bug
+description: خطأ في الكود أو في قاعدة من قواعد اللعبة
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: إيه اللي حصل؟ وإيه المتوقع؟
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: ازاي نعيد الخطأ؟ (Puzzle + الخوارزمية + الإعدادات + seed)
+    validations:
+      required: true
+  - type: input
+    id: module
+    attributes:
+      label: الـ Module المتأثر
+      placeholder: core/crossing_detector.py
