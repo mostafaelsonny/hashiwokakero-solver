@@ -196,4 +196,4 @@ Components:
 
 حساب الـ Penalty النهائي:
 
-Penalty = 4 + 0 + 1 =
+Penalty = 4 + 0 + 1 =5
