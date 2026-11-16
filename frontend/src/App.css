@@ -1,0 +1,384 @@
+/* ==========================================================================
+   App Styles: Chess & Dark Camel / Ivory Theme + Responsive Design
+   ========================================================================== */
+
+.app-root {
+  min-height: 100vh;
+  background-color: #f7f3eb;
+  color: #2e1b0e;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 16px 36px;
+  background: #331e0f; /* Rich dark walnut / camel wood header */
+  border-bottom: 3px solid #854f24;
+  box-shadow: 0 3px 12px rgba(45, 25, 10, 0.15);
+}
+
+.app-header-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sprint-badge {
+  background: #824b1d;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid #ad6f38;
+}
+
+.api-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.api-status-badge.connected {
+  background: #2e5a27;
+  color: #ffffff;
+  border: 1px solid #4b8c3f;
+}
+
+.api-status-badge.offline {
+  background: #6e2525;
+  color: #ffffff;
+  border: 1px solid #a84040;
+}
+
+.header-sub {
+  font-size: 13px;
+  color: #ebdcd0;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+/* Layout Body */
+.app-body {
+  display: flex;
+  gap: 28px;
+  padding: 28px 36px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.app-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 270px;
+  max-width: 290px;
+  width: 100%;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+  min-width: 0; /* Prevents flex children from overflowing */
+  width: 100%;
+}
+
+.hint-text {
+  color: #6b4a2e;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 0 4px;
+}
+
+/* Quick Presets Box */
+.preset-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+  border: 1.5px solid #d8c7b4;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 14px rgba(58, 32, 10, 0.05);
+  width: 100%;
+}
+
+.preset-title {
+  color: #3b2311;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preset-btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 8px 10px;
+  background: #faf5eb;
+  border: 1.5px solid #caa885;
+  color: #4a2d15;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.preset-btn:hover {
+  background: #ebdcc8;
+  border-color: #824b1d;
+  color: #2e1b0e;
+}
+
+/* Quick Guide Card */
+.quick-guide-card {
+  background: #ffffff;
+  border: 1.5px solid #d8c7b4;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 14px rgba(58, 32, 10, 0.05);
+  width: 100%;
+}
+
+.quick-guide-title {
+  color: #3b2311;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quick-guide-list {
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: #523722;
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+/* Backend Testing Panel */
+.test-panel {
+  background: #ffffff;
+  border: 1.5px solid #d8c7b4;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 14px rgba(58, 32, 10, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.test-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1.5px solid #ebd8c2;
+  padding-bottom: 10px;
+}
+
+.test-panel-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #3b2311;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.test-panel-sub {
+  font-size: 11px;
+  color: #7a502c;
+  font-weight: 600;
+}
+
+.test-buttons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-action-primary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #824b1d;
+  background: #824b1d;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-action-primary:hover:not(:disabled) {
+  background: #623511;
+  border-color: #4a2508;
+}
+
+.btn-action-primary.highlight {
+  background: #5a3416;
+}
+
+.btn-action-secondary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #caa885;
+  background: #faf5eb;
+  color: #4a2d15;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-action-secondary:hover:not(:disabled) {
+  background: #ebdcc8;
+  border-color: #824b1d;
+  color: #2e1b0e;
+}
+
+.btn-action-primary:disabled,
+.btn-action-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Result Box */
+.result-box {
+  background: #22160d;
+  border: 1.5px solid #58371d;
+  border-radius: 10px;
+  padding: 14px 16px;
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.result-title {
+  color: #e6d2be;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.result-badge {
+  color: #caa172;
+}
+
+.result-content {
+  margin: 0;
+  color: #f5ece1;
+  font-size: 12px;
+  font-family: "Fira Code", "Consolas", monospace;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+/* Tablets & Small Desktops (max-width: 960px) */
+@media (max-width: 960px) {
+  .app-body {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .app-sidebar {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .app-header {
+    padding: 14px 20px;
+  }
+
+  .header-sub {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+}
+
+/* Mobile Screens (max-width: 600px) */
+@media (max-width: 600px) {
+  .app-header {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .app-header-title {
+    font-size: 18px;
+  }
+
+  .app-body {
+    padding: 14px;
+    gap: 16px;
+  }
+
+  .test-panel {
+    padding: 14px;
+  }
+
+  .test-buttons-row {
+    flex-direction: column;
+  }
+
+  .btn-action-primary,
+  .btn-action-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
