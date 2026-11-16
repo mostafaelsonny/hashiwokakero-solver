@@ -1,0 +1,113 @@
+/* ==========================================================================
+   PuzzleGrid Styles: Chess & Dark Camel / Ivory Theme
+   ========================================================================== */
+
+.puzzle-grid-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 0 14px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.chess-board-frame {
+  display: inline-block;
+  padding: 8px;
+  background: #4a2e18; /* Dark walnut wood border */
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(50, 25, 10, 0.18), 0 2px 6px rgba(50, 25, 10, 0.12);
+  margin: 0 auto;
+}
+
+.puzzle-grid-svg {
+  background: #faf5eb; /* Warm ivory / cream board */
+  border-radius: 8px;
+  display: block;
+  cursor: crosshair;
+  user-select: none;
+}
+
+.board-outer-border {
+  fill: none;
+  stroke: #cfbeaa;
+  stroke-width: 1.5;
+  rx: 4;
+}
+
+.grid-cell {
+  stroke: #e2d4c3;
+  stroke-width: 0.8;
+  cursor: pointer;
+  transition: fill 0.15s ease;
+}
+
+.grid-cell.cell-light {
+  fill: #faf5eb;
+}
+
+.grid-cell.cell-dark {
+  fill: #f4ece0;
+}
+
+.grid-cell:hover {
+  fill: #ebdcc8;
+}
+
+.grid-center-dot {
+  fill: #b89e82;
+  pointer-events: none;
+}
+
+.island-group {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.island-group:hover .island-circle {
+  fill: #925321;
+}
+
+.island-halo {
+  fill: none;
+  stroke: #c98a4b;
+  stroke-width: 1.5;
+  opacity: 0.8;
+}
+
+.island-circle {
+  fill: #7e481c; /* Rich dark camel */
+  stroke: #ffffff; /* Crisp white ring */
+  stroke-width: 2.2;
+  transition: fill 0.15s ease;
+}
+
+.island-value-text {
+  text-anchor: middle;
+  fill: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+.island-id-text {
+  text-anchor: middle;
+  fill: #5c3818;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: "Consolas", monospace;
+  pointer-events: none;
+  user-select: none;
+}
+
+.grid-empty-hint {
+  text-anchor: middle;
+  fill: #8a6c4f;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}

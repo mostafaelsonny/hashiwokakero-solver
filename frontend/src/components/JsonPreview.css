@@ -1,0 +1,58 @@
+/* ==========================================================================
+   JsonPreview Styles: Chess & Dark Camel / Ivory Theme
+   ========================================================================== */
+
+.json-preview-container {
+  background: #22160d; /* Dark espresso / walnut for crisp code contrast */
+  border-radius: 12px;
+  border: 1.5px solid #58371d;
+  box-shadow: 0 6px 16px rgba(45, 25, 10, 0.12);
+  overflow: hidden;
+  width: 100%;
+}
+
+.json-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: #331f12;
+  border-bottom: 1.5px solid #58371d;
+}
+
+.json-preview-title {
+  color: #e6d2be;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.json-preview-badge {
+  background: #7e481c;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: monospace;
+  border: 1px solid #a86c39;
+}
+
+.json-preview-code {
+  margin: 0;
+  padding: 16px 20px;
+  color: #f5ece1; /* Warm ivory text */
+  font-size: 13px;
+  font-family: "Fira Code", "Cascadia Code", "Consolas", monospace;
+  line-height: 1.65;
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: transparent;
+  white-space: pre;
+}

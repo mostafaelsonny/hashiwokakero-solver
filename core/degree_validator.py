@@ -17,7 +17,18 @@ def compute_degrees(
     A double bridge (count 2) counts 2 for BOTH of its islands. Missing edge ids
     count as 0. Raise ValueError if a bridge value is not 0, 1 or 2.
     """
-    raise NotImplementedError("S1-04 not implemented yet (owner: Ebrahim)")
+    degrees: Dict[str, int] = {isl["id"]: 0 for isl in islands}
+
+    for e in edges:
+        count = solution["bridge_counts"].get(e["id"], 0)
+        if count not in (0, 1, 2):
+            raise ValueError(
+                f"Invalid bridge value {count!r} for edge {e['id']!r}. Must be 0, 1, or 2."
+            )
+        degrees[e["from"]] += count
+        degrees[e["to"]] += count
+
+    return degrees
 
 
 def check_degrees(
@@ -32,4 +43,19 @@ def check_degrees(
     mode="final"  : violation whenever actual != required (used on a finished solution).
     Raise ValueError for any other mode.
     """
-    raise NotImplementedError("S1-04 not implemented yet (owner: Ebrahim)")
+    if mode not in ("partial", "final"):
+        raise ValueError(f"Unknown mode: {mode!r}. Expected 'partial' or 'final'.")
+
+    degrees = compute_degrees(islands, edges, solution)
+    violations: List[DegreeViolation] = []
+
+    for isl in islands:
+        actual = degrees[isl["id"]]
+        required = isl["required_bridges"]
+
+        if mode == "partial" and actual > required:
+            violations.append({"island": isl["id"], "required": required, "actual": actual})
+        elif mode == "final" and actual != required:
+            violations.append({"island": isl["id"], "required": required, "actual": actual})
+
+    return sorted(violations, key=lambda v: v["island"])

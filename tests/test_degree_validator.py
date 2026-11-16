@@ -4,11 +4,6 @@ import pytest
 from core.degree_validator import check_degrees, compute_degrees
 from tests.helpers import P1_EDGES, P1_ISLANDS, p1
 
-pytestmark = pytest.mark.xfail(
-    raises=NotImplementedError,
-    reason="S1-04 not implemented yet - delete this marker when done",
-)
-
 
 def check(values, mode):
     result = check_degrees(P1_ISLANDS, P1_EDGES, p1(values), mode)

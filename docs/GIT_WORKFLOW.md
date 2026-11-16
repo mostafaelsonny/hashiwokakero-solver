@@ -1,11 +1,11 @@
 # دليل Git و GitHub لكل عضو
 
 > اتبع الخطوات بالترتيب. لو حاجة مش واضحة، اسأل Mostafa **قبل** ما تجرب حاجة مش فاهمها.
-> الرابط الفعلي للـ repo: `REPO_URL` (هيتحدّث هنا بعد الإنشاء).
+> الرابط الفعلي للـ repo: `https://github.com/mostafaelsonny/hashiwokakero-solver.git` (هيتحدّث هنا بعد الإنشاء).
 
 ## 0) الإعداد مرة واحدة بس
 ```bash
-git clone REPO_URL
+git clone https://github.com/mostafaelsonny/hashiwokakero-solver.git
 cd hashiwokakero-solver
 git config user.name  "اسمك"
 git config user.email "ايميل-حسابك-على-GitHub"
