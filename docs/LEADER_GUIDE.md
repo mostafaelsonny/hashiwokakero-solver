@@ -12,7 +12,7 @@ COLLABORATORS="monzer-username ebrahim-username rovan-username febronia-username
 **يدويًا:** ارفع المشروع، أنشئ `develop`، `Settings → Rules → Rulesets → New ruleset → Import` للملفين في `.github/rulesets/`، وادعُ الأعضاء بصلاحية **Write** (`Settings → Collaborators`).
 
 **بعد الإنشاء:**
-1. استبدل `REPO_URL` في `docs/GIT_WORKFLOW.md` والـ guides برابط الـ repo (`grep -rn REPO_URL docs`).
+1. استبدل `https://github.com/mostafaelsonny/hashiwokakero-solver.git` في `docs/GIT_WORKFLOW.md` والـ guides برابط الـ repo (`grep -rn https://github.com/mostafaelsonny/hashiwokakero-solver.git docs`).
 2. فعّل `.github/CODEOWNERS` لما كل واحد يديك الـ username.
 3. راجع **Bypass list** في كل Ruleset: لازم تحتوي **Admin role بس** (إنت)، ومفيش أي عضو فريق.
 
