@@ -4,10 +4,6 @@ import pytest
 from core.connectivity_checker import find_connected_components, is_connected
 from tests.helpers import P1_EDGES, P1_ISLANDS, component_set, isl, p1
 
-pytestmark = pytest.mark.xfail(
-    raises=NotImplementedError,
-    reason="S1-06 not implemented yet - delete this marker when done",
-)
 
 
 def comps(values):
