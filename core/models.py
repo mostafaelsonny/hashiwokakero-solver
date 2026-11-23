@@ -5,7 +5,7 @@ and type-checking helpers only. Field names are FROZEN once S1-02 is approved.
 """
 from __future__ import annotations
 
-from typing import Dict, List, Literal, TypedDict
+from typing import Any, Dict, List, Literal, Optional, TypedDict
 
 Orientation = Literal["horizontal", "vertical"]
 VALID_BRIDGE_VALUES = (0, 1, 2)
@@ -53,3 +53,25 @@ class ValidationReport(TypedDict):
     crossings: List[List[str]]
     connected_components: int
     invalid_values: List[InvalidValue]
+
+
+# ---------------------------------------------------------------------------
+# S2-01: Algorithm Interface & Standard Result Contract
+# Reference: docs/ALGORITHM_INTERFACE.md
+# ---------------------------------------------------------------------------
+
+SolverStatus = Literal[
+    "SOLVED",
+    "UNSATISFIABLE",
+    "LIMIT_REACHED",
+    "NO_VALID_SOLUTION_FOUND",
+    "INVALID_INPUT",
+]
+
+
+class SolverResult(TypedDict):
+    status: SolverStatus
+    solution: Optional[Solution]
+    validation_report: Optional[ValidationReport]
+    metrics: Dict[str, Any]
+

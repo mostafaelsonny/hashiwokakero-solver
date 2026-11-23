@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint 2 Command Center — Hashiwokakero Solver</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+    }
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.3);
+      border-radius: 4px;
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
+    }
+    .glow-amber {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-[#0b1120] text-slate-100 min-h-screen custom-scrollbar antialiased selection:bg-cyan-500 selection:text-white">
+
+  <!-- TOP HEADER / CONTROL TOWER -->
+  <header class="border-b border-slate-800 bg-[#0f172a]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-amber-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 font-black text-xl">
+            ⚡
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg font-black tracking-wide text-white">Sprint 2 Command Center</h1>
+              <span class="px-2 py-0.5 text-xs rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono font-semibold">M1 Tech Lead Cockpit</span>
+            </div>
+            <p class="text-xs text-slate-400">Hashiwokakero Solver • Core Algorithm Implementation & Unified Integration</p>
+          </div>
+        </div>
+
+        <!-- QUICK STATUS SUMMARY PILLS -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <div class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-400">الحالة:</span>
+            <span class="font-bold text-emerald-400">Day 1 — Frozen & Ready</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center gap-2">
+            <span class="text-slate-400">المهام:</span>
+            <span class="font-bold text-white font-mono">14 Tasks</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center gap-2">
+            <span class="text-slate-400">الفريق:</span>
+            <span class="font-bold text-amber-400 font-mono">5 Engineers</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center gap-2">
+            <span class="text-slate-400">العقد المعتمد:</span>
+            <span class="font-bold text-cyan-400 font-mono">ALGORITHM_INTERFACE.md</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MAIN NAVIGATION TABS -->
+      <nav class="flex space-x-reverse space-x-2 mt-3 pt-2 border-t border-slate-800/60 overflow-x-auto custom-scrollbar">
+        <button onclick="switchTab('workflow')" id="tab-btn-workflow" class="tab-btn active px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+          <span>🏭</span>
+          <span>رؤية المصنع البانورامية (Factory Floor)</span>
+        </button>
+        <button onclick="switchTab('deliverables')" id="tab-btn-deliverables" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent">
+          <span>📋</span>
+          <span>تسليمات الأعضاء وطرق التحقق (Deliverables & QA)</span>
+        </button>
+        <button onclick="switchTab('dependencies')" id="tab-btn-dependencies" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent">
+          <span>🔗</span>
+          <span>خريطة الاعتماديات ومين مستني مين (Dependency Matrix)</span>
+        </button>
+        <button onclick="switchTab('playbook')" id="tab-btn-playbook" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent">
+          <span>🧭</span>
+          <span>خطة القائد ومرحلة الـ Integration (Lead Playbook)</span>
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ============================================================== -->
+    <!-- TAB 1: FACTORY FLOOR (رؤية المصنع البانورامية)                -->
+    <!-- ============================================================== -->
+    <section id="tab-workflow" class="tab-content block space-y-6">
+      
+      <!-- HERO BANNER -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-900/40 p-6 glow-cyan">
+        <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-300 text-xs font-semibold mb-3">
+            <span>🏭 تشبيه المصنع الذكي</span>
+            <span>•</span>
+            <span>كيف تتدفق البيانات من البداية للنهاية</span>
+          </div>
+          <h2 class="text-2xl font-black text-white leading-tight">أنت الآن تقف في برج المراقبة وتطل على خط الإنتاج بالكامل</h2>
+          <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+            النظام لا يعمل ككتلة واحدة مبعثرة؛ بل يعمل كـ <strong class="text-cyan-300">خط تجميع صناعي دقيق (Automated Assembly Line)</strong>. كل محطة لها مدخل ومخرج محددين، ولا توجد محطة تعمل بحرية عشوائية دون المرور على بوابات المعايرة والاختبار.
+          </p>
+        </div>
+      </div>
+
+      <!-- VISUAL FACTORY PIPELINE -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-cyan-400 text-lg">⚙️</span>
+            <span>مراحل خط الإنتاج من إدخال اللغز وحتى رسم الحل على الشاشة</span>
+          </h3>
+          <span class="text-xs text-slate-400 font-mono">End-to-End Pipeline Workflow</span>
+        </div>
+
+        <!-- PIPELINE GRID (STATIONS) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- STATION 1 -->
+          <div class="relative rounded-xl border border-slate-800 bg-[#0c1322] p-4 hover:border-cyan-500/50 transition-all group">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-blue-950 text-blue-400 border border-blue-800">محطة 1 • المدخلات</span>
+              <span class="text-xs text-slate-500 font-mono">UI / Client</span>
+            </div>
+            <h4 class="font-bold text-white group-hover:text-cyan-300 transition-colors">استلام المواد الخام (Raw Puzzle)</h4>
+            <p class="text-xs text-slate-400 mt-1">المستخدم يقوم بإدخال أبعاد الشبكة والجزر عبر لوحة الـ React UI.</p>
+            <div class="mt-3 p-2 rounded bg-slate-950 border border-slate-800/80 font-mono text-[11px] text-slate-300">
+              <span class="text-indigo-400">Input:</span> {rows, cols, islands}
+            </div>
+            <div class="mt-2 text-[11px] text-emerald-400 flex items-center gap-1 font-semibold">
+              <span>✓ المسند إليه:</span>
+              <span>M1 (Mostafa) UI Layer</span>
+            </div>
+          </div>
+
+          <!-- STATION 2 -->
+          <div class="relative rounded-xl border border-slate-800 bg-[#0c1322] p-4 hover:border-cyan-500/50 transition-all group">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-amber-950 text-amber-400 border border-amber-800">محطة 2 • التوليد</span>
+              <span class="text-xs text-slate-500 font-mono">M2 Monzer</span>
+            </div>
+            <h4 class="font-bold text-white group-hover:text-cyan-300 transition-colors">توليد الجسور المرشحة (Candidate Edges)</h4>
+            <p class="text-xs text-slate-400 mt-1">فرز الجزر (صف ثم عمود)، وإضافة الجسور الأفقية يميناً ثم الرأسية لأسفل بالتسلسل E1..En.</p>
+            <div class="mt-3 p-2 rounded bg-slate-950 border border-slate-800/80 font-mono text-[11px] text-slate-300">
+              <span class="text-indigo-400">Produces:</span> CandidateBridge[E1..En]
+            </div>
+            <div class="mt-2 text-[11px] text-amber-400 flex items-center gap-1 font-semibold">
+              <span>⚠️ قاعدة حديدية:</span>
+              <span>ممنوع إعادة ترتيب هذه القائمة!</span>
+            </div>
+          </div>
+
+          <!-- STATION 3 -->
+          <div class="relative rounded-xl border border-slate-800 bg-[#0c1322] p-4 hover:border-cyan-500/50 transition-all group">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-950 text-purple-400 border border-purple-800">محطة 3 • الفهرسة</span>
+              <span class="text-xs text-slate-500 font-mono">M2 Monzer</span>
+            </div>
+            <h4 class="font-bold text-white group-hover:text-cyan-300 transition-colors">بناء سياق الجراف (Graph Context)</h4>
+            <p class="text-xs text-slate-400 mt-1">حساب الجسور المتصلة بكل جزيرة والجسور المتقاطعة مسبقاً لتوفيرها لجميع الخوارزميات في O(1).</p>
+            <div class="mt-3 p-2 rounded bg-slate-950 border border-slate-800/80 font-mono text-[11px] text-slate-300">
+              <span class="text-indigo-400">Context:</span> incident_edges + crossings
+            </div>
+            <div class="mt-2 text-[11px] text-purple-400 flex items-center gap-1 font-semibold">
+              <span>🚀 المستفيد:</span>
+              <span>M3, M4, M5 (كافة الخوارزميات)</span>
+            </div>
+          </div>
+
+          <!-- STATION 4 -->
+          <div class="relative rounded-xl border border-cyan-800/80 bg-[#0e172a] p-4 hover:border-cyan-400 transition-all group glow-cyan">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-950 text-cyan-300 border border-cyan-800">محطة 4 • التوزيع</span>
+              <span class="text-xs text-slate-400 font-mono">M1 Tech Lead</span>
+            </div>
+            <h4 class="font-bold text-white group-hover:text-cyan-300 transition-colors">البوابة المركزية (Algorithm Runner)</h4>
+            <p class="text-xs text-slate-400 mt-1">نقطة التحكم الواحدة: تفحص المدخلات، وتستدعي الخوارزمية المختارة، وتضبط التوقيت بالمللي ثانية.</p>
+            <div class="mt-3 p-2 rounded bg-slate-950 border border-slate-800/80 font-mono text-[11px] text-slate-300">
+              <span class="text-indigo-400">Caller:</span> run_algorithm(puzzle, alg)
+            </div>
+            <div class="mt-2 text-[11px] text-cyan-400 flex items-center gap-1 font-semibold">
+              <span>🛡️ الحارس:</span>
+              <span>يعزل الخوارزميات عن الـ UI</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- THE 3 ALGORITHM WORKBENCHES -->
+        <div class="border border-slate-800 rounded-xl p-5 bg-[#090d16] space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-cyan-500"></span>
+              <h4 class="font-black text-white text-sm">محطة 5 • ورش العمل المتوازية (The 3 Specialized Solvers)</h4>
+            </div>
+            <span class="text-xs text-slate-400">تستقبل نفس المدخلات وترجع نفس الـ Envelope</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- BACKTRACKING WORKBENCH -->
+            <div class="p-4 rounded-xl border border-blue-900/60 bg-blue-950/20 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-400">الورشة 1: دقة هندسية مطلقة</span>
+                <span class="text-[11px] font-mono bg-blue-900/40 text-blue-300 px-2 py-0.5 rounded">M3 Ebrahim</span>
+              </div>
+              <h5 class="font-bold text-white text-sm">Backtracking Solver (Exact)</h5>
+              <p class="text-xs text-slate-300">بحث شجري تراجعي ممنهج يختبر قيم الجسور {0, 1, 2}.</p>
+              <ul class="text-[11px] text-slate-400 space-y-1 list-disc list-inside">
+                <li>Search State يحفظ Degree وRemaining Capacity</li>
+                <li>Pruning فوري للأغصان المستحيلة والتقاطعات</li>
+                <li>إثبات رياضي قاطع لعدم وجود حل (UNSATISFIABLE)</li>
+              </ul>
+              <div class="pt-2 border-t border-blue-900/40 text-[11px] text-blue-300 font-mono">
+                solve_backtracking(...)
+              </div>
+            </div>
+
+            <!-- GA WORKBENCH -->
+            <div class="p-4 rounded-xl border border-emerald-900/60 bg-emerald-950/20 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-400">الورشة 2: استكشاف تطوري عالمي</span>
+                <span class="text-[11px] font-mono bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded">M4 Rovan</span>
+              </div>
+              <h5 class="font-bold text-white text-sm">Genetic Algorithm (GA)</h5>
+              <p class="text-xs text-slate-300">محاكاة تطورية للمجتمعات لاكتشاف الحلول التوافقية.</p>
+              <ul class="text-[11px] text-slate-400 space-y-1 list-disc list-inside">
+                <li>Chromosome من أرقام 0, 1, 2 بنفس طول الجسور</li>
+                <li>تقييم Fitness متعدد الأهداف (درجات + تقاطعات + اتصال)</li>
+                <li>تزاوج عشوائي (Crossover) وطفرات (Mutation) ونخبوية</li>
+              </ul>
+              <div class="pt-2 border-t border-emerald-900/40 text-[11px] text-emerald-300 font-mono">
+                solve_genetic(...)
+              </div>
+            </div>
+
+            <!-- MA WORKBENCH -->
+            <div class="p-4 rounded-xl border border-purple-900/60 bg-purple-950/20 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-purple-400">الورشة 3: هجين ذكي وسريع</span>
+                <span class="text-[11px] font-mono bg-purple-900/40 text-purple-300 px-2 py-0.5 rounded">M5 Febronia</span>
+              </div>
+              <h5 class="font-bold text-white text-sm">Memetic Algorithm (MA)</h5>
+              <p class="text-xs text-slate-300">خوارزمية جينية مدمج بداخلها بحث محلي صاعد (Hill Climbing).</p>
+              <ul class="text-[11px] text-slate-400 space-y-1 list-disc list-inside">
+                <li>تعيد استخدام وحدات GA بالكامل من M4 دون تكرار</li>
+                <li>توليد جيران عبر Single Gene وPairwise Transfer</li>
+                <li>تحسين الأفراد الأفضل في كل جيل وقبول التحسين فقط</li>
+              </ul>
+              <div class="pt-2 border-t border-purple-900/40 text-[11px] text-purple-300 font-mono">
+                solve_memetic(...)
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- POST-ALGORITHM QUALITY CONTROL & OUTPUT -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- STATION 6: FINAL VALIDATOR GATE -->
+          <div class="p-4 rounded-xl border border-red-900/60 bg-red-950/20 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-red-950 text-red-400 border border-red-800">محطة 6 • فحص الجودة الإلزامي</span>
+              <span class="text-xs text-slate-400 font-mono">The Supreme Judge</span>
+            </div>
+            <h4 class="font-bold text-white text-sm">بوابة التحقق النهائي المستقل (Independent Validator)</h4>
+            <p class="text-xs text-slate-300">
+              حتى لو ادعت أي خوارزمية داخلياً أنها وجدت حلاً (SOLVED)، فإن <strong class="text-white">Algorithm Runner</strong> يمرر الحل بصورة مستقلة على دالة <code class="text-red-300 font-mono">validate_solution</code>. لو وجد أي تقاطع أو شبكة مقطوعة، يتم رفض الحل فوراً وتعديل الحالة إلى <code class="text-red-300 font-mono">NO_VALID_SOLUTION_FOUND</code> لحماية واجهة المستخدم من أي تضليل.
+            </p>
+          </div>
+
+          <!-- STATION 7: SHOWROOM & VISUALIZATION -->
+          <div class="p-4 rounded-xl border border-emerald-900/60 bg-emerald-950/20 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">محطة 7 • معرض المنتجات</span>
+              <span class="text-xs text-slate-400 font-mono">React Frontend (M1)</span>
+            </div>
+            <h4 class="font-bold text-white text-sm">العرض التفاعلي على الشاشة (UI Visualization)</h4>
+            <p class="text-xs text-slate-300">
+              استلام الـ Envelope القياسي ورسم الجسور على الشبكة (جسر فردي count=1 أو مزدوج count=2)، وإظهار رسائل الحالة الواضحة (الأخضر للحل، الأحمر لعدم وجود حل، والأصفر لانتهاء وقت البحث)، وعرض أزمنة التشغيل بالمللي ثانية ومقاييس الأداء.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 2: DELIVERABLES & QA (تسليمات الأعضاء ومعايير الاستلام)      -->
+    <!-- ============================================================== -->
+    <section id="tab-deliverables" class="tab-content hidden space-y-6">
+      
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <div>
+          <h2 class="text-xl font-black text-white">دليل استلام ومراجعة المهام لكل عضو (Quality Assurance Manual)</h2>
+          <p class="text-xs text-slate-400 mt-1">كل عضو في الفريق مطلوب منه تسليمات كودية وتوثيقية محددة. إليك كيفية فحصها بدقة متناهية والتأكد من خلوها من أي أخطاء قبل عمل Merge.</p>
+        </div>
+
+        <!-- MEMBER FILTER BUTTONS -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800">
+          <button onclick="filterMember('all')" class="member-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-white">الكل (All Members)</button>
+          <button onclick="filterMember('m1')" class="member-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">M1 (Mostafa - Lead)</button>
+          <button onclick="filterMember('m2')" class="member-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">M2 (Monzer - Graph Engine)</button>
+          <button onclick="filterMember('m3')" class="member-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">M3 (Ebrahim - Backtracking)</button>
+          <button onclick="filterMember('m4')" class="member-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">M4 (Rovan - GA)</button>
+          <button onclick="filterMember('m5')" class="member-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">M5 (Febronia - MA)</button>
+        </div>
+      </div>
+
+      <!-- MEMBER CARDS CONTAINER -->
+      <div class="space-y-4">
+        
+        <!-- CARD M2: MONZER -->
+        <div class="member-card m2 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black">
+                M2
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base">Monzer Hassan — Core Graph Engine Support</h3>
+                <p class="text-xs text-slate-400">مهام: <span class="font-mono text-amber-400 font-bold">[S2-02] Build Graph Context & Verify Candidate Ordering</span></p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-300 border border-amber-800">Critical Architecture Foundation</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-cyan-400">📦</span>
+                <span>المفروض تستلم منه إيه بالظبط؟</span>
+              </h4>
+              <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
+                <li><code class="text-cyan-300 font-mono">core/graph_context.py</code> تحتوي على دالة <code class="text-amber-300 font-mono">build_graph_context(puzzle, candidate_bridges)</code>.</li>
+                <li>توفير خريطة <code class="text-slate-200 font-mono">incident_edges_by_island</code> (لكل جزيرة قائمة بإندكسات الجسور المتصلة بها).</li>
+                <li>توفير خريطة <code class="text-slate-200 font-mono">crossing_edges_by_index</code> (لكل جسر قائمة بإندكسات الجسور التي تتقاطع معه هندسياً).</li>
+                <li>ملف الاختبارات: <code class="text-cyan-300 font-mono">tests/test_graph_context.py</code>.</li>
+                <li>مستند التوثيق: <code class="text-cyan-300 font-mono">docs/GRAPH_ENGINE_SUPPORT.md</code>.</li>
+              </ul>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-emerald-400">🧪</span>
+                <span>إزاي تتأكد بنسبة 100% إنه صح؟ (طريقة الفحص)</span>
+              </h4>
+              <div class="bg-black/60 p-3 rounded-xl border border-slate-800 space-y-2">
+                <p class="text-slate-400">1. شغل الاختبار عبر التيرمينال:</p>
+                <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[11px] text-emerald-400">
+                  <span>pytest tests/test_graph_context.py -v</span>
+                  <button onclick="copyCommand('pytest tests/test_graph_context.py -v')" class="text-slate-500 hover:text-white text-xs">نسخ</button>
+                </div>
+                <p class="text-slate-400">2. شيك على الترتيب الحتمي (Deterministic Ordering): اتأكد إنه لو دخل الجزر بترتيب عشوائي، لازم توليد الجسور يفضل E1..En بنفس الترتيب.</p>
+                <p class="text-slate-400">3. شيك إن التقاطع strict (< مش <=) وإن الجسور اللي بتلمس نفس الجزيرة مش بتعتبر تقاطع.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RED FLAGS -->
+          <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 text-xs text-red-300 flex items-start gap-2">
+            <span class="text-red-400 font-bold">⛔ Red Flag (ارفض الـ PR لو لقيت ده):</span>
+            <span>لو قام بتغيير ترتيب أو أسماء CandidateBridge أو حاول يضيف حقول جديدة في models.py بدون الرجوع لـ DATA_MODEL.md.</span>
+          </div>
+        </div>
+
+        <!-- CARD M3: EBRAHIM -->
+        <div class="member-card m3 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-black">
+                M3
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base">Ebrahim (El general) — Validation & Backtracking</h3>
+                <p class="text-xs text-slate-400">مهام: <span class="font-mono text-blue-400 font-bold">[S2-03] Search State • [S2-04] Recursive Solver • [S2-05] Pruning</span></p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-950 text-blue-300 border border-blue-800">Exact Solver Engine</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-cyan-400">📦</span>
+                <span>المفروض تستلم منه إيه بالظبط؟</span>
+              </h4>
+              <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
+                <li><code class="text-cyan-300 font-mono">core/backtracking_state.py</code>: فئات تمثيل الحالة وحساب Remaining Capacity وعمليات <code class="text-blue-300 font-mono">assign</code> و <code class="text-blue-300 font-mono">undo</code>.</li>
+                <li><code class="text-cyan-300 font-mono">core/backtracking_solver.py</code>: الدالة المطابقة للتوقيع <code class="text-blue-300 font-mono">solve_backtracking(puzzle, candidate_bridges, config)</code>.</li>
+                <li>قواعد الـ Pruning الثلاثة: Upper degree, Lower bound feasibility, Crossing pruning.</li>
+                <li>ملف الاختبارات: <code class="text-cyan-300 font-mono">tests/test_backtracking_solver.py</code>.</li>
+                <li>مستند التوثيق: <code class="text-cyan-300 font-mono">docs/BACKTRACKING_IMPLEMENTATION.md</code>.</li>
+              </ul>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-emerald-400">🧪</span>
+                <span>إزاي تتأكد بنسبة 100% إنه صح؟ (طريقة الفحص)</span>
+              </h4>
+              <div class="bg-black/60 p-3 rounded-xl border border-slate-800 space-y-2">
+                <p class="text-slate-400">1. شغل الاختبار الشامل:</p>
+                <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[11px] text-emerald-400">
+                  <span>pytest tests/test_backtracking_solver.py -v</span>
+                  <button onclick="copyCommand('pytest tests/test_backtracking_solver.py -v')" class="text-slate-500 hover:text-white text-xs">نسخ</button>
+                </div>
+                <p class="text-slate-400">2. اختبار P1 الأساسي: لازم يرجع بالضبط [1, 1, 1, 1] مع status="SOLVED".</p>
+                <p class="text-slate-400">3. اختبار No Solution: اعطه لغز مستحيل، اتأكد إنه استكشف ورجع "UNSATISFIABLE" مش Null أو Exception.</p>
+                <p class="text-slate-400">4. اختبار Limit Reached: اعطه max_states=5 وشوف هل بيرجع "LIMIT_REACHED" بأمان.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RED FLAGS -->
+          <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 text-xs text-red-300 flex items-start gap-2">
+            <span class="text-red-400 font-bold">⛔ Red Flag (ارفض الـ PR لو لقيت ده):</span>
+            <span>لو خلط بين القيمة 0 (قرار عدم وضع جسر) والقيمة None (حالة غير محسومة)، أو لو كان الـ undo بيسرب حالة ومش بيرجع درجات الجزر لأصلها بالضبط.</span>
+          </div>
+        </div>
+
+        <!-- CARD M4: ROVAN -->
+        <div class="member-card m4 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
+                M4
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base">Rovan Rafaat — Genetic Algorithm Implementation</h3>
+                <p class="text-xs text-slate-400">مهام: <span class="font-mono text-emerald-400 font-bold">[S2-06] Chromosome & Fitness • [S2-07] Operators & Loop • [S2-08] Tests & Docs</span></p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800">Evolutionary Engine</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-cyan-400">📦</span>
+                <span>المفروض تستلم منها إيه بالظبط؟</span>
+              </h4>
+              <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
+                <li><code class="text-cyan-300 font-mono">algorithms/ga/chromosome.py</code>: دوال التحويل بين Chromosome وSolution.</li>
+                <li><code class="text-cyan-300 font-mono">algorithms/ga/fitness.py</code>: دالة التقييم وترجع Tuple من (degree_error, crossing_count, connectivity_penalty).</li>
+                <li><code class="text-cyan-300 font-mono">algorithms/ga/operators.py</code>: دوال Selection, Uniform Crossover, Mutation, Elitism.</li>
+                <li><code class="text-cyan-300 font-mono">algorithms/ga/genetic_solver.py</code>: دالة <code class="text-emerald-300 font-mono">solve_genetic(puzzle, candidate_bridges, config)</code>.</li>
+                <li>مستند التوثيق: <code class="text-cyan-300 font-mono">docs/GA_IMPLEMENTATION.md</code>.</li>
+              </ul>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-emerald-400">🧪</span>
+                <span>إزاي تتأكد بنسبة 100% إنها صح؟ (طريقة الفحص)</span>
+              </h4>
+              <div class="bg-black/60 p-3 rounded-xl border border-slate-800 space-y-2">
+                <p class="text-slate-400">1. شغل اختبارات الـ GA:</p>
+                <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[11px] text-emerald-400">
+                  <span>pytest tests/test_ga_solver.py -v</span>
+                  <button onclick="copyCommand('pytest tests/test_ga_solver.py -v')" class="text-slate-500 hover:text-white text-xs">نسخ</button>
+                </div>
+                <p class="text-slate-400">2. Round-trip lossless test: تأكد أن تحويل chromosome -> solution -> chromosome لا يفقد أي قيمة.</p>
+                <p class="text-slate-400">3. اختبار اللياقة على P1: الكروموسوم [1,1,1,1] يجب أن يرجع بالضبط (0, 0, 0).</p>
+                <p class="text-slate-400">4. فحص الـ Seed: تأكد إنه مع تثبيت الـ seed، النتيجة تتكرر بنسبة 100%.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RED FLAGS -->
+          <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 text-xs text-red-300 flex items-start gap-2">
+            <span class="text-red-400 font-bold">⛔ Red Flag (ارفض الـ PR لو لقيت ده):</span>
+            <span>لو رجعت الحالة "UNSATISFIABLE" لما تخلص عدد الـ generations (يجب أن ترجع NO_VALID_SOLUTION_FOUND فقط لأنها احتمالية)، أو لو أعادت ترتيب الجسور في الكروموسوم.</span>
+          </div>
+        </div>
+
+        <!-- CARD M5: FEBRONIA -->
+        <div class="member-card m5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-black">
+                M5
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base">Febronia Adel — Memetic Algorithm & Local Search</h3>
+                <p class="text-xs text-slate-400">مهام: <span class="font-mono text-purple-400 font-bold">[S2-09] Local Search Operators • [S2-10] MA Evolution Loop • [S2-11] Tests & Docs</span></p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-950 text-purple-300 border border-purple-800">Hybrid Optimization Engine</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-cyan-400">📦</span>
+                <span>المفروض تستلم منها إيه بالظبط؟</span>
+              </h4>
+              <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
+                <li><code class="text-cyan-300 font-mono">algorithms/ma/local_search.py</code>: دوال توليد الجيران (Single Gene Change و Pairwise Bridge Transfer).</li>
+                <li>دالة <code class="text-purple-300 font-mono">hill_climb(chromosome, puzzle, candidate_bridges, max_steps)</code>.</li>
+                <li><code class="text-cyan-300 font-mono">algorithms/ma/memetic_solver.py</code>: دالة <code class="text-purple-300 font-mono">solve_memetic(puzzle, candidate_bridges, config)</code>.</li>
+                <li>تسجيل المقاييس: <code class="text-slate-200 font-mono">local_search_calls</code> و <code class="text-slate-200 font-mono">local_search_improvements</code>.</li>
+                <li>مستند التوثيق: <code class="text-cyan-300 font-mono">docs/MA_IMPLEMENTATION.md</code>.</li>
+              </ul>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-emerald-400">🧪</span>
+                <span>إزاي تتأكد بنسبة 100% إنها صح؟ (طريقة الفحص)</span>
+              </h4>
+              <div class="bg-black/60 p-3 rounded-xl border border-slate-800 space-y-2">
+                <p class="text-slate-400">1. شغل اختبارات الـ MA:</p>
+                <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[11px] text-emerald-400">
+                  <span>pytest tests/test_memetic_solver.py -v</span>
+                  <button onclick="copyCommand('pytest tests/test_memetic_solver.py -v')" class="text-slate-500 hover:text-white text-xs">نسخ</button>
+                </div>
+                <p class="text-slate-400">2. التحقق من عدم قبول حركات أسوأ: الـ Hill Climbing ممنوع يقبل كروموسوم ذو fitness أسوأ أو مساوي.</p>
+                <p class="text-slate-400">3. ثبات درجة الجزيرة في Pairwise Transfer: تأكد أن نقل جسر بين جسرين لنفس الجزيرة لا يغير درجة الجزيرة المركزية إطلاقاً.</p>
+                <p class="text-slate-400">4. التحقق من إعادة الاستخدام: افتح الكود واتأكد إنها استوردت Selection وCrossover من M4 ولم تنسخها بالكود!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RED FLAGS -->
+          <div class="p-3 rounded-xl bg-red-950/20 border border-red-900/40 text-xs text-red-300 flex items-start gap-2">
+            <span class="text-red-400 font-bold">⛔ Red Flag (ارفض الـ PR لو لقيت ده):</span>
+            <span>لو كانت بتشغل الـ GA بالكامل، وبعد ما تخلص بتنادي الـ Hill Climbing مرة واحدة في الآخر! هذا ليس Memetic Algorithm؛ الـ Local Search يجب أن يعمل بداخل حلقة الأجيال (In-Loop).</span>
+          </div>
+        </div>
+
+        <!-- CARD M1: MOSTAFA -->
+        <div class="member-card m1 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center font-black">
+                M1
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base">Mostafa Elsonny (أنت — Tech Lead & PM)</h3>
+                <p class="text-xs text-slate-400">مهامك: <span class="font-mono text-cyan-400 font-bold">[S2-01] Interface • [S2-12] Runner • [S2-13] UI • [S2-14] Integration QA</span></p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-950 text-cyan-300 border border-cyan-800">The Architect & Integrator</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-cyan-400">📦</span>
+                <span>تسليماتك البرمجية والمعمارية:</span>
+              </h4>
+              <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
+                <li><code class="text-emerald-400 font-mono font-bold">[تم بنجاح ✓]</code> <code class="text-cyan-300 font-mono">docs/ALGORITHM_INTERFACE.md</code> وتحديث <code class="text-slate-200 font-mono">core/models.py</code>.</li>
+                <li><code class="text-cyan-300 font-mono">core/algorithm_runner.py</code> تحتوي على الدالة المركزية <code class="text-cyan-300 font-mono">run_algorithm</code> وحاجز الفحص المستقل.</li>
+                <li>ربط الـ Frontend UI (<code class="text-cyan-300 font-mono">frontend/src/App.tsx</code> و <code class="text-cyan-300 font-mono">ControlPanel.tsx</code>) بـ <code class="text-slate-200 font-mono">POST /solve</code>.</li>
+                <li>ملف الاختبارات التكاملية: <code class="text-cyan-300 font-mono">tests/test_sprint2_integration.py</code>.</li>
+                <li>تقرير الاختبار النهائي: <code class="text-cyan-300 font-mono">docs/SPRINT_2_TEST_REPORT.md</code>.</li>
+              </ul>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="text-emerald-400">🧪</span>
+                <span>معايير الاعتماد النهائي للـ Sprint:</span>
+              </h4>
+              <div class="bg-black/60 p-3 rounded-xl border border-slate-800 space-y-2">
+                <p class="text-slate-400">1. تشغيل كامل الـ Test Suite بدون أي Regression:</p>
+                <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800 font-mono text-[11px] text-emerald-400">
+                  <span>pytest tests/ -v</span>
+                  <button onclick="copyCommand('pytest tests/ -v')" class="text-slate-500 hover:text-white text-xs">نسخ</button>
+                </div>
+                <p class="text-slate-400">2. تجربة الـ 3 خوارزميات من قائمة الـ Dropdown في الـ UI والتأكد من رسم الجسور بنجاح.</p>
+                <p class="text-slate-400">3. التأكد من أن جميع الـ 14 PR تمت مراجعتها ودمجها على فرع develop.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 3: DEPENDENCIES (خريطة الاعتماديات ومين مستني مين)         -->
+    <!-- ============================================================== -->
+    <section id="tab-dependencies" class="tab-content hidden space-y-6">
+      
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <div>
+          <h2 class="text-xl font-black text-white">شبكة الاعتماديات والمسار الحرج (Critical Path & Dependencies)</h2>
+          <p class="text-xs text-slate-400 mt-1">
+            "مين مستني مين وعشان إيه؟" — هذا القسم يكشف لك بدقة أين توجد الاختناقات، ومن لا يستطيع بدء عمله قبل استلام مخرج من زميله.
+          </p>
+        </div>
+
+        <!-- DEPENDENCY FLOW CHART -->
+        <div class="p-6 rounded-xl bg-[#090d16] border border-slate-800 space-y-6">
+          <div class="text-center font-bold text-xs text-slate-400 font-mono tracking-widest uppercase">
+            مخطط تدفق التسليمات بين أعضاء الفريق (Dependency Chain)
+          </div>
+
+          <!-- LEVEL 1: FOUNDATION -->
+          <div class="flex justify-center">
+            <div class="w-full max-w-md p-4 rounded-xl border-2 border-emerald-500/80 bg-emerald-950/30 text-center glow-cyan space-y-1">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-900 text-emerald-300">COMPLETED ✓</span>
+              <h4 class="font-black text-white text-sm">S2-01: ALGORITHM_INTERFACE.md (M1 Mostafa)</h4>
+              <p class="text-xs text-slate-300">العقد البرمجي الموحد لجميع الخوارزميات (Signatures + Result Schema)</p>
+            </div>
+          </div>
+
+          <div class="flex justify-center text-slate-600 text-lg font-bold">↓↓↓ يفتح الطريق بالتوازي أمام ↓↓↓</div>
+
+          <!-- LEVEL 2: CORE BUILDING BLOCKS -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <div class="p-4 rounded-xl border border-amber-800/80 bg-amber-950/20 space-y-2">
+              <span class="text-[11px] font-bold text-amber-400 font-mono">S2-02 (M2 Monzer)</span>
+              <h5 class="font-bold text-white text-xs">Graph Context</h5>
+              <p class="text-[11px] text-slate-400">تجهيز incident_edges و crossings للجميع.</p>
+              <div class="p-2 rounded bg-black/40 text-[10px] text-amber-300">
+                👉 مستنيه: M3 لتقليم التقاطعات، وM5 لـ Pairwise Transfer.
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl border border-blue-800/80 bg-blue-950/20 space-y-2">
+              <span class="text-[11px] font-bold text-blue-400 font-mono">S2-03 (M3 Ebrahim)</span>
+              <h5 class="font-bold text-white text-xs">Backtracking State</h5>
+              <p class="text-[11px] text-slate-400">هيكل Search State والـ assign/undo.</p>
+              <div class="p-2 rounded bg-black/40 text-[10px] text-blue-300">
+                👉 يفتح الطريق لـ: S2-04 (Recursive Search) لـ M3 نفسه.
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl border border-emerald-800/80 bg-emerald-950/20 space-y-2">
+              <span class="text-[11px] font-bold text-emerald-400 font-mono">S2-06 (M4 Rovan)</span>
+              <h5 class="font-bold text-white text-xs">GA Chromosome & Fitness</h5>
+              <p class="text-[11px] text-slate-400">ترميز الكروموسوم ودالة تقييم اللياقة.</p>
+              <div class="p-2 rounded bg-black/40 text-[10px] text-emerald-300 font-bold">
+                🚨 بلوكر حرج: M5 Febronia مستنياه علشان تبدأ Local Search!
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex justify-center text-slate-600 text-lg font-bold">↓↓↓ ثم تتقدم الخوارزميات ↓↓↓</div>
+
+          <!-- LEVEL 3: SOLVER IMPLEMENTATION & HANDOFF -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="p-4 rounded-xl border border-emerald-800/60 bg-emerald-950/10 space-y-2">
+              <span class="text-[11px] font-bold text-emerald-400 font-mono">S2-07 (M4 Rovan)</span>
+              <h5 class="font-bold text-white text-xs">GA Operators & Evolution Loop</h5>
+              <p class="text-[11px] text-slate-400">توفير دوال Selection, Crossover, Mutation, Elitism.</p>
+              <div class="p-2 rounded bg-black/40 text-[11px] text-emerald-300">
+                👉 تسلمها لـ: <strong class="text-white">M5 Febronia (S2-10)</strong> لتشغيل دورة الـ Memetic Evolution.
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl border border-purple-800/60 bg-purple-950/10 space-y-2">
+              <span class="text-[11px] font-bold text-purple-400 font-mono">S2-09 & S2-10 (M5 Febronia)</span>
+              <h5 class="font-bold text-white text-xs">Local Search & Memetic Loop</h5>
+              <p class="text-[11px] text-slate-400">تطبيق Hill Climbing باستخدام مشغلي M4 وسياق M2.</p>
+              <div class="p-2 rounded bg-black/40 text-[11px] text-purple-300">
+                👉 اكتمال الـ MA = اكتمال الخوارزميات الثلاثة لمرحلة الـ Runner.
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex justify-center text-slate-600 text-lg font-bold">↓↓↓ مرحلة التجميع المركزي والتكامل (The Integration Gate) ↓↓↓</div>
+
+          <!-- LEVEL 4: RUNNER & UI INTEGRATION -->
+          <div class="flex justify-center">
+            <div class="w-full max-w-2xl p-4 rounded-xl border-2 border-cyan-500 bg-cyan-950/40 text-center space-y-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-900 text-cyan-300">M1 TECH LEAD INTEGRATION</span>
+              <h4 class="font-black text-white text-sm">S2-12: Algorithm Runner + S2-13: UI Integration + S2-14: Acceptance Tests</h4>
+              <p class="text-xs text-slate-300">
+                تجميع Backtracking (M3) و GA (M4) و MA (M5) داخل الموجه المركزي، وربطها بالواجهة، وإجراء الاختبارات التراجعية الشاملة.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DETAILED DEPENDENCY MATRIX TABLE -->
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-right text-xs border border-slate-800 rounded-xl overflow-hidden">
+            <thead class="bg-slate-950 text-slate-300 font-bold border-b border-slate-800">
+              <tr>
+                <th class="p-3">العضو الذي ينتظر (Receiver)</th>
+                <th class="p-3">ينتظر من (Provider)</th>
+                <th class="p-3">التسليم المطلوب (Handover Artifact)</th>
+                <th class="p-3">عشان يعمل بيه إيه؟ (Purpose)</th>
+                <th class="p-3">مستوى الخطورة (Severity)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60 bg-[#0a0f1d] text-slate-300">
+              <tr class="hover:bg-slate-800/30">
+                <td class="p-3 font-bold text-purple-400">M5 (Febronia)</td>
+                <td class="p-3 font-mono text-emerald-400">M4 (Rovan)</td>
+                <td class="p-3 font-mono text-slate-200">algorithms/ga/chromosome.py & fitness.py</td>
+                <td class="p-3">لبناء مشغلات البحث المحلي وتقييم الجيران بنفس الـ Fitness المشترك.</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800 font-bold">بلوكر مباشر (P0)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-800/30">
+                <td class="p-3 font-bold text-purple-400">M5 (Febronia)</td>
+                <td class="p-3 font-mono text-emerald-400">M4 (Rovan)</td>
+                <td class="p-3 font-mono text-slate-200">algorithms/ga/operators.py</td>
+                <td class="p-3">لاستدعاء Selection وCrossover وMutation داخل دورة MA دون تكرار الكود.</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800 font-bold">بلوكر مباشر (P0)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-800/30">
+                <td class="p-3 font-bold text-blue-400">M3 (Ebrahim)</td>
+                <td class="p-3 font-mono text-amber-400">M2 (Monzer)</td>
+                <td class="p-3 font-mono text-slate-200">core/graph_context.py (crossing_edges)</td>
+                <td class="p-3">لتنفيذ Pruning سريع للتقاطعات أثناء البحث الشجري بدون حسابها من الصفر.</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 font-bold">تسريع وأداء (P1)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-800/30">
+                <td class="p-3 font-bold text-purple-400">M5 (Febronia)</td>
+                <td class="p-3 font-mono text-amber-400">M2 (Monzer)</td>
+                <td class="p-3 font-mono text-slate-200">core/graph_context.py (incident_edges)</td>
+                <td class="p-3">لتنفيذ عملية Pairwise Bridge Transfer بين جسرين لنفس الجزيرة.</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 font-bold">أساسي للمشغل (P1)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-800/30">
+                <td class="p-3 font-bold text-cyan-400">M1 (Mostafa)</td>
+                <td class="p-3 font-mono text-slate-300">M3, M4, M5</td>
+                <td class="p-3 font-mono text-slate-200">solve_backtracking, solve_genetic, solve_memetic</td>
+                <td class="p-3">لتشغيل الخوارزميات الثلاثة من الـ Algorithm Runner وربطها بالواجهة.</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold">تكامل نهائي (Day 4)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 4: PLAYBOOK & INTEGRATION (خطة القائد والـ Integration)    -->
+    <!-- ============================================================== -->
+    <section id="tab-playbook" class="tab-content hidden space-y-6">
+      
+      <!-- HERO -->
+      <div class="bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900 border border-cyan-900/40 rounded-2xl p-6 glow-cyan">
+        <h2 class="text-xl font-black text-white">دليل القائد اليومي وخطة الـ Integration المحكمة</h2>
+        <p class="text-xs text-slate-300 mt-1">
+          خطة يومية محددة خطوة بخطوة لما يجب عليك فعله من Day 1 وحتى Demo اليوم الخامس، مع التركيز على استراتيجية مراجعة ودمج الـ PRs دون أي Conflicts.
+        </p>
+      </div>
+
+      <!-- DAY-BY-DAY ROADMAP -->
+      <div class="space-y-4">
+        
+        <!-- DAY 1 -->
+        <div class="rounded-xl border border-slate-800 bg-[#0c1322] p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs flex items-center justify-center font-bold">1</span>
+              <h3 class="font-bold text-white text-sm">اليوم الأول (Day 1) — تجميد الواجهات وإطلاق الهياكل (Freeze & Skeletons)</h3>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">COMPLETED ✓</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300">
+            <div>
+              <p class="font-bold text-slate-200 mb-1">دورك كـ Tech Lead (ما تم تنفيذه):</p>
+              <ul class="space-y-1 list-disc list-inside text-slate-400">
+                <li>كتابة وتثبيت وثيقة <code class="text-cyan-300 font-mono">docs/ALGORITHM_INTERFACE.md</code>.</li>
+                <li>تحديث <code class="text-slate-200 font-mono">core/models.py</code> بدعم TypedDicts (SolverResult).</li>
+                <li>تحديث كروت تريلو الـ 14 وتنسيق المهام مع M2, M3, M4, M5.</li>
+              </ul>
+            </div>
+            <div>
+              <p class="font-bold text-slate-200 mb-1">ما يفعله باقي الفريق اليوم:</p>
+              <ul class="space-y-1 list-disc list-inside text-slate-400">
+                <li>M2 يبدأ هيكل <code class="text-amber-300 font-mono">graph_context.py</code>.</li>
+                <li>M3 يصمم هيكل <code class="text-blue-300 font-mono">backtracking_state.py</code>.</li>
+                <li>M4 وM5 يجتمعان لمدة 15 دقيقة لتثبيت دوال الكروموسوم المشتركة.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="rounded-xl border border-slate-800 bg-[#0c1322] p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 text-xs flex items-center justify-center font-bold">2</span>
+              <h3 class="font-bold text-white text-sm">اليوم الثاني (Day 2) — بناء المحركات الأساسية (Foundations & State)</h3>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800 font-bold">NEXT UP</span>
+          </div>
+          <div class="text-xs text-slate-300 space-y-2">
+            <p><strong class="text-white">مهامك الحاسمة اليوم:</strong></p>
+            <div class="space-y-1.5 pl-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="accent-cyan-500 rounded">
+                <span>مراجعة PR لـ M2 (<code class="text-amber-300 font-mono">feature/graph-context</code>) والتأكد أن ترتيب الجسور لم يتغير.</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="accent-cyan-500 rounded">
+                <span>التأكد من أن M3 أنجز Search State مع اختبارات كاملة لـ undo والتأكد من عدم وجود State Leakage.</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="accent-cyan-500 rounded">
+                <span>التأكد من أن M4 قامت بعمل PR لـ <code class="text-emerald-300 font-mono">chromosome.py</code> و <code class="text-emerald-300 font-mono">fitness.py</code> لإعطاء الضوء الأخضر لـ M5 لبدء مشغلات Local Search.</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="rounded-xl border border-slate-800 bg-[#0c1322] p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 text-xs flex items-center justify-center font-bold">3</span>
+              <h3 class="font-bold text-white text-sm">اليوم الثالث (Day 3) — اكتمال الخوارزميات الثلاثة (Core Solvers Completion)</h3>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950 text-indigo-300 border border-indigo-800 font-bold">MILESTONE</span>
+          </div>
+          <div class="text-xs text-slate-300 space-y-2">
+            <p><strong class="text-white">المستهدف بنهاية اليوم:</strong></p>
+            <ul class="space-y-1 list-disc list-inside text-slate-400">
+              <li>M3 يقدم PR كامل لـ <code class="text-blue-300 font-mono">solve_backtracking</code> قادر على حل P1 والتعامل مع No-Solution.</li>
+              <li>M4 تقدم PR كامل لـ <code class="text-emerald-300 font-mono">solve_genetic</code> بدورة تطورية كاملة وتنتهي بأمان.</li>
+              <li>M5 تقدم PR كامل لـ <code class="text-purple-300 font-mono">solve_memetic</code> بتطبيق Hill Climbing داخل حلقة الأجيال.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- DAY 4: THE INTEGRATION DAY -->
+        <div class="rounded-xl border-2 border-cyan-500/80 bg-slate-900/90 p-5 space-y-4 glow-cyan">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-cyan-500 text-black text-xs flex items-center justify-center font-black">4</span>
+              <h3 class="font-black text-white text-sm">اليوم الرابع (Day 4) — يوم التكامل الكبير (The Master Integration Day)</h3>
+            </div>
+            <span class="px-2.5 py-0.5 rounded text-[11px] font-mono bg-cyan-500 text-black font-black">YOUR BIGGEST DAY</span>
+          </div>
+
+          <div class="space-y-3 text-xs text-slate-300">
+            <p class="leading-relaxed">
+              هذا هو اليوم الذي تختبر فيه قوة قيادتك كـ Tech Lead. اتبع بالضبط <strong class="text-cyan-400">بروتوكول الدمج الممنهج (Sequential Merge Protocol)</strong>:
+            </p>
+
+            <!-- MERGE ORDER BOX -->
+            <div class="p-3 rounded-xl bg-black/60 border border-slate-800 space-y-2 font-mono text-[11px]">
+              <div class="text-slate-400 font-bold">ترتيب دمج الـ Pull Requests في فرع develop:</div>
+              <div class="space-y-1 text-slate-300">
+                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">1.</span> <span>Merge PR (M2): feature/graph-context</span> <span class="text-slate-500">(الأساس الجغرافي)</span></div>
+                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">2.</span> <span>Merge PR (M4): feature/ga-chromosome-fitness</span> <span class="text-slate-500">(أساس الكروموسوم)</span></div>
+                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">3.</span> <span>Merge PR (M3): feature/backtracking-solver</span> <span class="text-slate-500">(خوارزمية 1)</span></div>
+                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">4.</span> <span>Merge PR (M4): feature/genetic-algorithm</span> <span class="text-slate-500">(خوارزمية 2)</span></div>
+                <div class="flex items-center gap-2"><span class="text-emerald-400 font-bold">5.</span> <span>Merge PR (M5): feature/memetic-algorithm</span> <span class="text-slate-500">(خوارزمية 3)</span></div>
+                <div class="flex items-center gap-2"><span class="text-cyan-400 font-bold">6.</span> <span class="text-cyan-300">Merge PR (M1): feature/algorithm-runner</span> <span class="text-slate-400">(الموجه المركزي وحاجز الأمان)</span></div>
+                <div class="flex items-center gap-2"><span class="text-cyan-400 font-bold">7.</span> <span class="text-cyan-300">Merge PR (M1): feature/ui-algorithm-integration</span> <span class="text-slate-400">(الربط بالواجهة)</span></div>
+              </div>
+            </div>
+
+            <!-- INTEGRATION VERIFICATION STEPS -->
+            <div class="space-y-2 pt-2">
+              <p class="font-bold text-white">إجراءات الفحص التكاملي بعد الدمج:</p>
+              <ul class="space-y-1 list-disc list-inside text-slate-400">
+                <li>تشغيل <code class="text-cyan-300 font-mono">pytest tests/test_integration.py</code> والتأكد أن الخوارزميات الثلاثة تعمل من خلال <code class="text-slate-200 font-mono">run_algorithm</code> بنفس الـ Input.</li>
+                <li>اختبار حارس الأمان: اعط الـ Runner حلاً به تقاطعات وافحص هل يقوم بتعديل الحالة إلى <code class="text-red-400 font-mono">NO_VALID_SOLUTION_FOUND</code> دون انهيار الـ API.</li>
+                <li>فتح المتصفح والتأكد من استجابة واجهة الـ React على الشاشات المختلفة (Desktop & Mobile) بدون أي خطأ CSS.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 5 -->
+        <div class="rounded-xl border border-slate-800 bg-[#0c1322] p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs flex items-center justify-center font-bold">5</span>
+              <h3 class="font-bold text-white text-sm">اليوم الخامس (Day 5) — اعتماد الجودة والعرض الختامي (Acceptance & Demo)</h3>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">FINAL SPRINT GATE</span>
+          </div>
+          <div class="text-xs text-slate-300 space-y-2">
+            <ul class="space-y-1 list-disc list-inside text-slate-400">
+              <li>كتابة التقرير النهائي: <code class="text-cyan-300 font-mono">docs/SPRINT_2_TEST_REPORT.md</code> متضمناً أزمنة التشغيل وجداول المقارنة.</li>
+              <li>بروفة العرض الحي (5 دقائق لكل عضو):
+                <span class="text-slate-300">M3 يعرض Backtracking، وM4 تعرض أجيال GA، وM5 توضح تأثير Local Search، وM2 يشرح Graph Context، وأنت تدير التكامل الموحد.</span>
+              </li>
+              <li>إغلاق ونقل جميع كروت Sprint 2 على Trello إلى قائمة <code class="text-emerald-400 font-mono font-bold">Done</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Tab Switching Function
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+        btn.classList.add('text-slate-400', 'border-transparent');
+      });
+
+      const activeContent = document.getElementById('tab-' + tabId);
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+
+      if (activeContent) activeContent.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+        activeBtn.classList.remove('text-slate-400', 'border-transparent');
+      }
+    }
+
+    // Member Filter Function in Tab 2
+    function filterMember(memberKey) {
+      const cards = document.querySelectorAll('.member-card');
+      const buttons = document.querySelectorAll('.member-filter-btn');
+
+      buttons.forEach(b => {
+        b.classList.remove('bg-cyan-500', 'text-white');
+        b.classList.add('bg-slate-800', 'text-slate-300');
+      });
+
+      event.target.classList.add('bg-cyan-500', 'text-white');
+      event.target.classList.remove('bg-slate-800', 'text-slate-300');
+
+      cards.forEach(card => {
+        if (memberKey === 'all' || card.classList.contains(memberKey)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Copy Command to Clipboard
+    function copyCommand(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('تم نسخ الأمر إلى الحافظة:\n' + text);
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    }
+  </script>
+
+</body>
+</html>
