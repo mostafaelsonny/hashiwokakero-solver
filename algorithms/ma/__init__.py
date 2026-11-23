@@ -1,7 +1,7 @@
 """Memetic Algorithm (MA) package (Sprint 2 / Sprint 3).
 
-Exposes Local Search operators, neighborhood generators, and hill climbing
-optimization routines for hybrid Memetic evolution.
+Exposes Local Search operators, neighborhood generators, hill climbing,
+and the unified Memetic Algorithm solver.
 """
 from __future__ import annotations
 
@@ -17,8 +17,10 @@ from algorithms.ma.local_search import (
     single_gene_neighbors,
     validate_local_search_input,
 )
+from algorithms.ma.memetic_solver import solve_memetic
 
 __all__ = [
+    "solve_memetic",
     "InvalidChromosomeError",
     "find_invalid_values",
     "validate_local_search_input",
