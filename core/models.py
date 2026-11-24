@@ -66,6 +66,7 @@ SolverStatus = Literal[
     "LIMIT_REACHED",
     "NO_VALID_SOLUTION_FOUND",
     "INVALID_INPUT",
+    "INVALID_RESULT",
 ]
 
 
