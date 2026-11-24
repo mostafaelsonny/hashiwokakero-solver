@@ -382,3 +382,197 @@
     justify-content: center;
   }
 }
+
+
+/* ==========================================================================
+   Solver Panel Styles (Sprint 2 - S2-13)
+   ========================================================================== */
+
+.solver-panel {
+  background: #ffffff;
+  border: 1.5px solid #d8c7b4;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 14px rgba(58, 32, 10, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+/* Big Solve Button */
+.btn-solve {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: #1a5c2a;
+  border: 2px solid #145220;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  letter-spacing: 0.03em;
+}
+
+.btn-solve:hover:not(:disabled) {
+  background: #145220;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 82, 32, 0.3);
+}
+
+.btn-solve:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Status Banners */
+.solver-status-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.solver-status-emoji {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.solver-status-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solver-status-label {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.solver-status-detail {
+  font-size: 12px;
+  opacity: 0.85;
+  font-family: "Fira Code", "Consolas", monospace;
+  word-break: break-word;
+}
+
+.status-solved {
+  background: #dcfce7;
+  border: 1.5px solid #86efac;
+  color: #14532d;
+}
+
+.status-warn {
+  background: #fef9c3;
+  border: 1.5px solid #fde047;
+  color: #713f12;
+}
+
+.status-error {
+  background: #fee2e2;
+  border: 1.5px solid #fca5a5;
+  color: #7f1d1d;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  background: #f7f3eb;
+  border: 1.5px solid #e5d8c4;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.metrics-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #3b2311;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.metrics-entries {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #ffffff;
+  border: 1px solid #e5d8c4;
+  border-radius: 7px;
+  padding: 8px 10px;
+}
+
+.metric-key {
+  font-size: 10px;
+  color: #7a502c;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metric-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2e1b0e;
+  font-family: "Fira Code", "Consolas", monospace;
+}
+
+/* Raw JSON collapse */
+.result-details {
+  border: 1.5px solid #d8c7b4;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.result-details-summary {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5c3818;
+  background: #faf5eb;
+  user-select: none;
+}
+
+.result-details-summary:hover {
+  background: #ebdcc8;
+}
+
+.result-details .result-content {
+  margin: 0;
+  padding: 12px 14px;
+  background: #22160d;
+  color: #f5ece1;
+  font-size: 11.5px;
+  font-family: "Fira Code", "Consolas", monospace;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .btn-solve {
+    font-size: 14px;
+    padding: 12px 18px;
+  }
+  .metrics-entries {
+    grid-template-columns: 1fr 1fr;
+  }
+}

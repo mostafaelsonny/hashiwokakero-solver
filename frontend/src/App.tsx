@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { Algorithm, Island, Puzzle } from "./types";
+import type { Algorithm, CandidateBridge, Island, Puzzle, SolveResult, SolveStatus } from "./types";
 import { ControlPanel } from "./components/ControlPanel";
 import { PuzzleGrid } from "./components/PuzzleGrid";
 import { JsonPreview } from "./components/JsonPreview";
@@ -43,6 +43,22 @@ const P2_PRESET: Puzzle = {
 };
 
 // ---------------------------------------------------------------------------
+// Status Banner Config
+// ---------------------------------------------------------------------------
+
+const STATUS_CONFIG: Record<
+  SolveStatus,
+  { emoji: string; label: string; className: string }
+> = {
+  SOLVED: { emoji: "✅", label: "Puzzle Solved!", className: "status-solved" },
+  UNSATISFIABLE: { emoji: "🚫", label: "No Solution Exists (UNSATISFIABLE)", className: "status-error" },
+  LIMIT_REACHED: { emoji: "⏱️", label: "Search Limit Reached – try increasing limits", className: "status-warn" },
+  NO_VALID_SOLUTION_FOUND: { emoji: "🔍", label: "No Valid Solution Found Within Search Limits", className: "status-warn" },
+  INVALID_INPUT: { emoji: "⚠️", label: "Invalid Input", className: "status-error" },
+  INVALID_RESULT: { emoji: "🐛", label: "Internal Error: Solver returned invalid result", className: "status-error" },
+};
+
+// ---------------------------------------------------------------------------
 // App Component
 // ---------------------------------------------------------------------------
 
@@ -57,6 +73,11 @@ export default function App() {
   const [apiStatusText, setApiStatusText] = useState("Checking...");
   const [testResult, setTestResult] = useState<{ title: string; data: unknown } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Solver State
+  const [solveResult, setSolveResult] = useState<SolveResult | null>(null);
+  const [candidateBridges, setCandidateBridges] = useState<CandidateBridge[]>([]);
+  const [isSolving, setIsSolving] = useState(false);
 
   const puzzle: Puzzle = { rows, cols, islands };
 
@@ -94,6 +115,9 @@ export default function App() {
       };
       return [...prev, newIsland];
     });
+    // Clear any existing solution when puzzle changes
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, []);
 
   const handleIslandCycleValue = useCallback((id: string) => {
@@ -104,26 +128,36 @@ export default function App() {
         return { ...isl, required_bridges: next };
       })
     );
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, []);
 
   const handleIslandRightClick = useCallback((id: string) => {
     setIslands((prev) => prev.filter((isl) => isl.id !== id));
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, []);
 
   const handleNewGrid = useCallback(() => {
     resetIslandCounter();
     setIslands([]);
     setTestResult(null);
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, []);
 
   const handleRowsChange = useCallback((newRows: number) => {
     setRows(newRows);
     setIslands((prev) => prev.filter((isl) => isl.row < newRows && isl.col < cols));
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, [cols]);
 
   const handleColsChange = useCallback((newCols: number) => {
     setCols(newCols);
     setIslands((prev) => prev.filter((isl) => isl.row < rows && isl.col < newCols));
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, [rows]);
 
   // Load Presets
@@ -133,9 +167,42 @@ export default function App() {
     setCols(preset.cols);
     setIslands(preset.islands);
     setTestResult(null);
+    setSolveResult(null);
+    setCandidateBridges([]);
   }, []);
 
-  // API Test Actions
+  // -------------------------------------------------------------------------
+  // 🚀 Main Solve Handler
+  // -------------------------------------------------------------------------
+  const handleSolve = async () => {
+    if (islands.length === 0) return;
+    setIsSolving(true);
+    setSolveResult(null);
+    setCandidateBridges([]);
+
+    try {
+      // Fetch candidate bridges for rendering
+      const bridgesRes = await getCandidateBridges(puzzle);
+      setCandidateBridges(bridgesRes.candidate_bridges);
+
+      // Call solver
+      const result = await solve(puzzle, algorithm);
+      setSolveResult(result);
+    } catch (err: unknown) {
+      setSolveResult({
+        status: "INVALID_INPUT",
+        solution: null,
+        validation_report: null,
+        metrics: { error: String(err) },
+      });
+    } finally {
+      setIsSolving(false);
+    }
+  };
+
+  // -------------------------------------------------------------------------
+  // Legacy API Test Actions (kept for debugging)
+  // -------------------------------------------------------------------------
   const handleTestCandidateBridges = async () => {
     setIsLoading(true);
     try {
@@ -230,23 +297,14 @@ export default function App() {
     }
   };
 
-  const handleTestSolve = async () => {
-    setIsLoading(true);
-    try {
-      const res = await solve(puzzle, algorithm);
-      setTestResult({
-        title: `POST /solve (Algorithm: ${algorithm})`,
-        data: res,
-      });
-    } catch (err: unknown) {
-      setTestResult({
-        title: `POST /solve (${algorithm}) - Expected Sprint 1 Result`,
-        data: String(err),
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // -------------------------------------------------------------------------
+  // Render helpers
+  // -------------------------------------------------------------------------
+  const statusConfig = solveResult ? STATUS_CONFIG[solveResult.status] ?? STATUS_CONFIG.INVALID_RESULT : null;
+
+  const metricEntries = solveResult?.metrics
+    ? Object.entries(solveResult.metrics).filter(([, v]) => typeof v === "number")
+    : [];
 
   return (
     <div className="app-root">
@@ -255,7 +313,7 @@ export default function App() {
         <h1 className="app-header-title">
           <span>♟️</span> Hashiwokakero Solver
         </h1>
-        <span className="sprint-badge">Sprint 1</span>
+        <span className="sprint-badge">Sprint 2</span>
 
         {/* Backend API Live Status Badge */}
         <div
@@ -332,12 +390,14 @@ export default function App() {
           </div>
         </aside>
 
-        {/* Main Chess Board / Grid */}
+        {/* Main Grid Area */}
         <main className="app-main">
           <PuzzleGrid
             rows={rows}
             cols={cols}
             islands={islands}
+            candidateBridges={candidateBridges}
+            solvedBridgeCounts={solveResult?.solution?.bridge_counts ?? null}
             onCellClick={handleCellClick}
             onIslandRightClick={handleIslandRightClick}
             onIslandCycleValue={handleIslandCycleValue}
@@ -349,28 +409,96 @@ export default function App() {
               : `✓ ${islands.length} island${islands.length !== 1 ? "s" : ""} placed. Click to cycle bridge counts (1-8), right-click to remove.`}
           </p>
 
-          {/* Backend API Interactive Testing Panel */}
+          {/* ================================================================
+              🚀 SOLVER PANEL (Sprint 2 Main Feature)
+              ================================================================ */}
+          <section className="solver-panel">
+            <div className="test-panel-header">
+              <h3 className="test-panel-title">
+                <span>🤖</span> Solve Puzzle
+              </h3>
+              <span className="test-panel-sub">
+                Algorithm: <strong>{algorithm}</strong>
+              </span>
+            </div>
+
+            <button
+              className="btn-solve"
+              onClick={handleSolve}
+              disabled={isSolving || islands.length === 0}
+            >
+              {isSolving ? (
+                <><span>⏳</span> Solving…</>
+              ) : (
+                <><span>🚀</span> Solve with {algorithm.charAt(0).toUpperCase() + algorithm.slice(1)}</>
+              )}
+            </button>
+
+            {/* Status Banner */}
+            {solveResult && statusConfig && (
+              <div className={`solver-status-banner ${statusConfig.className}`}>
+                <span className="solver-status-emoji">{statusConfig.emoji}</span>
+                <div className="solver-status-body">
+                  <span className="solver-status-label">{statusConfig.label}</span>
+                  {solveResult.status === "INVALID_INPUT" && solveResult.metrics?.error && (
+                    <span className="solver-status-detail">{String(solveResult.metrics.error)}</span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Metrics */}
+            {solveResult && metricEntries.length > 0 && (
+              <div className="metrics-grid">
+                <div className="metrics-title">📊 Execution Metrics</div>
+                <div className="metrics-entries">
+                  {metricEntries.map(([key, val]) => (
+                    <div key={key} className="metric-item">
+                      <span className="metric-key">{key.replace(/_/g, " ")}</span>
+                      <span className="metric-val">
+                        {typeof val === "number" && key.includes("ms")
+                          ? `${Number(val).toFixed(1)} ms`
+                          : typeof val === "number"
+                          ? Number(val).toLocaleString()
+                          : String(val)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Raw JSON (collapsed view) */}
+            {solveResult && (
+              <details className="result-details">
+                <summary className="result-details-summary">🔍 Raw API Response</summary>
+                <pre className="result-content">
+                  {JSON.stringify(solveResult, null, 2)}
+                </pre>
+              </details>
+            )}
+          </section>
+
+          {/* Backend API Debug Testing Panel */}
           <section className="test-panel">
             <div className="test-panel-header">
               <h3 className="test-panel-title">
-                <span>🧪</span> Backend API Live Tests (Sprint 1 Verification)
+                <span>🧪</span> Backend API Debug Tests
               </h3>
               <span className="test-panel-sub">
-                Directly tests FastAPI Endpoints
+                Sprint 1 Verification Endpoints
               </span>
             </div>
 
             <div className="test-buttons-row">
-              {/* Test Candidate Bridges on current puzzle */}
               <button
                 className="btn-action-primary"
                 onClick={handleTestCandidateBridges}
                 disabled={isLoading}
               >
-                <span>🌉</span> 1. Test /candidate-bridges (Active Grid)
+                <span>🌉</span> 1. Test /candidate-bridges
               </button>
 
-              {/* Validate User's Custom Drawn Grid */}
               <button
                 className="btn-action-primary highlight"
                 onClick={handleTestValidateCurrentGrid}
@@ -379,7 +507,6 @@ export default function App() {
                 <span>🎯</span> 2. Validate My Active Grid
               </button>
 
-              {/* Test P1 Valid Solution */}
               <button
                 className="btn-action-secondary"
                 onClick={handleTestValidateP1Valid}
@@ -388,7 +515,6 @@ export default function App() {
                 <span>✅</span> P1 Preset [1,1,1,1]
               </button>
 
-              {/* Test Degree Violation */}
               <button
                 className="btn-action-secondary"
                 onClick={handleTestValidateDegreeViolation}
@@ -397,7 +523,6 @@ export default function App() {
                 <span>⚠️</span> P1 Missing Bridge [1,0,1,1]
               </button>
 
-              {/* Test Crossing Detection */}
               <button
                 className="btn-action-secondary"
                 onClick={handleTestValidateCrossing}
@@ -405,18 +530,8 @@ export default function App() {
               >
                 <span>⚔️</span> P2 Crossing [1,1]
               </button>
-
-              {/* Test Solver 501 Endpoint */}
-              <button
-                className="btn-action-secondary"
-                onClick={handleTestSolve}
-                disabled={isLoading}
-              >
-                <span>🚀</span> Test /solve (501)
-              </button>
             </div>
 
-            {/* Test Result Output Box */}
             {testResult && (
               <div className="result-box">
                 <div className="result-title">

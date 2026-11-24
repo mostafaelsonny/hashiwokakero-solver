@@ -1,27 +1,19 @@
 """FastAPI layer. Run:  uvicorn api.main:app --reload   (from the repo root)
 
-/validate and /solve are fully implemented via core modules.
+/validate and /solve are fully implemented via core.algorithm_runner.
 Contract is described in docs/SYSTEM_ARCHITECTURE.md.
 """
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from algorithms.backtracking import solve_backtracking
-from algorithms.genetic import solve_genetic
-from algorithms.memetic import solve_memetic
+from core.algorithm_runner import list_supported_algorithms, run_algorithm
 from core.candidate_generator import generate_candidate_edges
 from core.solution_validator import validate_solution
-
-ALGORITHMS = {
-    "backtracking": solve_backtracking,
-    "genetic": solve_genetic,
-    "memetic": solve_memetic,
-}
 
 app = FastAPI(title="Hashiwokakero Solver API", version="1.0.0")
 
@@ -76,7 +68,7 @@ def health() -> dict:
 @app.get("/algorithms")
 def algorithms() -> List[str]:
     """List the available solving algorithms."""
-    return list(ALGORITHMS)
+    return list_supported_algorithms()
 
 
 @app.post("/candidate-bridges")
@@ -108,19 +100,19 @@ def validate(req: ValidateRequest) -> dict:
 
 @app.post("/solve")
 def solve(req: SolveRequest) -> dict:
-    """Solve the puzzle using the requested algorithm.
+    """Solve the puzzle using the requested algorithm via the unified Algorithm Runner.
 
-    Returns: {status, solution, stats}
+    Returns the standard SolverResult:
+      { status, solution, validation_report, metrics }
     """
-    solver = ALGORITHMS.get(req.algorithm)
-    if solver is None:
-        raise HTTPException(status_code=400, detail=f"Unknown algorithm: {req.algorithm!r}")
     try:
         puzzle = req.puzzle.model_dump()
-        if req.algorithm == "backtracking":
-            return solver(puzzle)
-        return solver(puzzle, params=req.config)
-    except NotImplementedError as exc:
-        raise HTTPException(status_code=501, detail=str(exc))
+        result = run_algorithm(puzzle, req.algorithm, config=req.config)
+        # INVALID_INPUT means the runner rejected the request (bad algo name or puzzle)
+        if result.get("status") == "INVALID_INPUT":
+            raise HTTPException(status_code=400, detail=result["metrics"].get("error", "Invalid input"))
+        return result
+    except HTTPException:
+        raise
     except Exception as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
+        raise HTTPException(status_code=500, detail=str(exc))

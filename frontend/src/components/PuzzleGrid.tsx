@@ -1,11 +1,13 @@
 import React from "react";
-import type { Island } from "../types";
+import type { CandidateBridge, Island } from "../types";
 import "./PuzzleGrid.css";
 
 interface PuzzleGridProps {
   rows: number;
   cols: number;
   islands: Island[];
+  candidateBridges: CandidateBridge[];
+  solvedBridgeCounts: Record<string, 0 | 1 | 2> | null;
   onCellClick: (row: number, col: number) => void;
   onIslandRightClick: (id: string) => void;
   onIslandCycleValue: (id: string) => void;
@@ -14,15 +16,22 @@ interface PuzzleGridProps {
 const CELL_SIZE = 60;
 const ISLAND_RADIUS = 21;
 const PADDING = 34;
+const BRIDGE_GAP = 5; // pixel offset for double bridge lines
 
 function getIslandAt(islands: Island[], row: number, col: number): Island | undefined {
   return islands.find((isl) => isl.row === row && isl.col === col);
+}
+
+function getIslandById(islands: Island[], id: string): Island | undefined {
+  return islands.find((isl) => isl.id === id);
 }
 
 export function PuzzleGrid({
   rows,
   cols,
   islands,
+  candidateBridges,
+  solvedBridgeCounts,
   onCellClick,
   onIslandRightClick,
   onIslandCycleValue,
@@ -32,6 +41,60 @@ export function PuzzleGrid({
 
   function cellCenter(row: number, col: number): [number, number] {
     return [PADDING + col * CELL_SIZE + CELL_SIZE / 2, PADDING + row * CELL_SIZE + CELL_SIZE / 2];
+  }
+
+  // Build bridge rendering data
+  const bridgeLines: React.ReactNode[] = [];
+
+  if (candidateBridges.length > 0 && solvedBridgeCounts) {
+    for (const edge of candidateBridges) {
+      const count = solvedBridgeCounts[edge.id] as number | undefined;
+      if (!count) continue;
+
+      const fromIsland = getIslandById(islands, edge.from);
+      const toIsland = getIslandById(islands, edge.to);
+      if (!fromIsland || !toIsland) continue;
+
+      const [x1, y1] = cellCenter(fromIsland.row, fromIsland.col);
+      const [x2, y2] = cellCenter(toIsland.row, toIsland.col);
+
+      if (count === 1) {
+        bridgeLines.push(
+          <line
+            key={`bridge-${edge.id}`}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            className="bridge-single"
+          />
+        );
+      } else {
+        // Double bridge: draw two parallel lines offset perpendicular to the direction
+        const isHorizontal = edge.orientation === "horizontal";
+        const dx = isHorizontal ? 0 : BRIDGE_GAP;
+        const dy = isHorizontal ? BRIDGE_GAP : 0;
+
+        bridgeLines.push(
+          <React.Fragment key={`bridge-${edge.id}`}>
+            <line
+              x1={x1 - dx}
+              y1={y1 - dy}
+              x2={x2 - dx}
+              y2={y2 - dy}
+              className="bridge-double"
+            />
+            <line
+              x1={x1 + dx}
+              y1={y1 + dy}
+              x2={x2 + dx}
+              y2={y2 + dy}
+              className="bridge-double"
+            />
+          </React.Fragment>
+        );
+      }
+    }
   }
 
   return (
@@ -100,6 +163,9 @@ export function PuzzleGrid({
               );
             })
           )}
+
+          {/* 🌉 Bridge Lines (rendered BELOW islands so islands appear on top) */}
+          {bridgeLines}
 
           {/* Islands */}
           {islands.map((island) => {

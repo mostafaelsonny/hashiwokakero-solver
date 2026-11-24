@@ -111,3 +111,24 @@
   font-weight: 500;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
+
+
+/* ==========================================================================
+   Bridge Rendering Styles (Sprint 2 - S2-13)
+   ========================================================================== */
+
+.bridge-single {
+  stroke: #2563eb;
+  stroke-width: 4;
+  stroke-linecap: round;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.bridge-double {
+  stroke: #1d4ed8;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  pointer-events: none;
+  opacity: 0.85;
+}
