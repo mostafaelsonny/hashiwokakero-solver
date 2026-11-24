@@ -27,17 +27,20 @@ export interface Solution {
 
 export type Algorithm = "backtracking" | "genetic" | "memetic";
 
+// Canonical statuses returned by core/algorithm_runner.py
 export type SolveStatus =
-  | "Solution Found"
-  | "No Solution Exists"
-  | "Search Limit Reached"
-  | "No Valid Solution Found Within Search Limits"
-  | "Invalid Input";
+  | "SOLVED"
+  | "UNSATISFIABLE"
+  | "LIMIT_REACHED"
+  | "NO_VALID_SOLUTION_FOUND"
+  | "INVALID_INPUT"
+  | "INVALID_RESULT";
 
 export interface SolveResult {
   status: SolveStatus;
   solution: Solution | null;
-  stats: Record<string, number>;
+  validation_report: ValidationReport | null;
+  metrics: Record<string, number | string>;
 }
 
 export interface ValidationReport {
