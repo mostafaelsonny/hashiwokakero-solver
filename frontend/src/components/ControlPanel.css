@@ -1,0 +1,163 @@
+/* ==========================================================================
+   ControlPanel Styles: Chess & Dark Camel / Ivory Theme
+   ========================================================================== */
+
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1.5px solid #d8c7b4;
+  box-shadow: 0 6px 18px rgba(58, 32, 10, 0.07);
+  width: 100%;
+}
+
+.control-panel-title {
+  color: #3b2311;
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ecd8c2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  color: #7a502c;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.grid-size-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.number-label {
+  color: #47301d;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 44px;
+}
+
+.number-input {
+  width: 65px;
+  padding: 6px 10px;
+  background: #faf6f0;
+  border: 1.5px solid #caa885;
+  border-radius: 7px;
+  color: #3b2311;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.number-input:focus {
+  border-color: #7e481c;
+  box-shadow: 0 0 0 3px rgba(126, 72, 28, 0.18);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e5d6c5;
+  background: #faf6f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.radio-card:hover {
+  border-color: #caa885;
+}
+
+.radio-card.active {
+  background: #7e481c;
+  border-color: #5d3210;
+  box-shadow: 0 2px 8px rgba(126, 72, 28, 0.25);
+}
+
+.radio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #3b2311;
+  transition: color 0.15s ease;
+}
+
+.radio-card.active .radio-title {
+  color: #ffffff;
+}
+
+.radio-desc {
+  font-size: 11px;
+  color: #7e5c3e;
+  margin-left: 24px;
+  transition: color 0.15s ease;
+}
+
+.radio-card.active .radio-desc {
+  color: #f3e7dc;
+}
+
+.radio-native {
+  accent-color: #7e481c;
+  cursor: pointer;
+}
+
+.btn-reset {
+  padding: 11px 16px;
+  background: #7e481c;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 3px 10px rgba(126, 72, 28, 0.22);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-reset:hover {
+  background: #623511;
+  box-shadow: 0 4px 14px rgba(98, 53, 17, 0.35);
+}
+
+.btn-reset:active {
+  transform: translateY(1px);
+}

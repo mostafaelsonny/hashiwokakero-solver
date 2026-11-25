@@ -47,7 +47,7 @@
 
 ## 6) ازاي تبدأ (أول 30 دقيقة)
 ```bash
-git clone REPO_URL && cd hashiwokakero-solver
+git clone https://github.com/mostafaelsonny/hashiwokakero-solver.git && cd hashiwokakero-solver
 git config user.name "اسمك" && git config user.email "ايميلك-على-GitHub"
 git checkout develop
 python -m venv .venv            # Windows: .venv\Scripts\activate   |  Mac/Linux: source .venv/bin/activate

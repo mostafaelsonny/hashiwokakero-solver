@@ -1,9 +1,9 @@
-// Mirrors docs/DATA_MODEL.md. Field names are frozen once S1-02 is approved.
+// Domain types — mirrors docs/DATA_MODEL.md. Field names are frozen.
 export interface Island {
   id: string;
-  row: number; // 0-based, grows downward
-  col: number; // 0-based, grows to the right
-  required_bridges: number; // 1..8
+  row: number;
+  col: number;
+  required_bridges: number;
 }
 
 export interface Puzzle {
@@ -27,17 +27,20 @@ export interface Solution {
 
 export type Algorithm = "backtracking" | "genetic" | "memetic";
 
+// Canonical statuses returned by core/algorithm_runner.py
 export type SolveStatus =
-  | "Solution Found"
-  | "No Solution Exists"
-  | "Search Limit Reached"
-  | "No Valid Solution Found Within Search Limits"
-  | "Invalid Input";
+  | "SOLVED"
+  | "UNSATISFIABLE"
+  | "LIMIT_REACHED"
+  | "NO_VALID_SOLUTION_FOUND"
+  | "INVALID_INPUT"
+  | "INVALID_RESULT";
 
 export interface SolveResult {
   status: SolveStatus;
   solution: Solution | null;
-  stats: Record<string, number>;
+  validation_report: ValidationReport | null;
+  metrics: Record<string, number | string>;
 }
 
 export interface ValidationReport {

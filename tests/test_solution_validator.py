@@ -4,10 +4,6 @@ import pytest
 from core.solution_validator import validate_solution
 from tests.helpers import P1_PUZZLE, P2_PUZZLE, p1, p2, pair_set
 
-pytestmark = pytest.mark.xfail(
-    raises=NotImplementedError,
-    reason="S1-07 not implemented yet - delete this marker when done",
-)
 
 
 def test_known_valid_solution():

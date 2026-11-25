@@ -1,8 +1,9 @@
 # Shared Data Model — Hashiwokakero Puzzle Solver
 
-> **حالة المستند (Document Status):** Draft for team design review — لسه مقترح وبيحتاج مراجعة الفريق.
+> **حالة المستند (Document Status):** APPROVED & FROZEN — الموديل معتمد ومجمّد رسمياً كأساس لكل الـ Components.
 > **Owner:** Mostafa (Data Model Owner)
-> **Reviewers:** Monzer, Ebrahim, Rovan, وعضو الـ UI team
+> **Reviewers:** Monzer, Ebrahim, Rovan, Febronia
+> **Approval Date:** Sprint 1 Day 2 (Officially Frozen)
 > **مكان الملف في الـ Repository:** `docs/DATA_MODEL.md`
 > **بيغطي:** UI, Candidate Bridge Generation, Backtracking, Genetic Algorithm (GA), Memetic Algorithm (MA), وValidation.
 
@@ -790,16 +791,16 @@ validate_solution(
 
 ## 15. Definition of Done (DoD)
 
-- [ ] ملف `docs/DATA_MODEL.md` موجود في الـ Repository.
-- [ ] الـ Puzzle والـ Island structures موضحين بكل أسماء الـ Fields والـ Types الصحيحة.
-- [ ] الـ Candidate Bridge structure واتجاه الـ endpoints موضحين.
-- [ ] قاعدة أقرب جزيرة ظاهرة (nearest visible island) مكتوبة بشكل صريح.
-- [ ] الـ Deterministic Candidate Bridge ordering وطريقة ترقيم `E1..En` موضحين بمثال.
-- [ ] تم توضيح تمثيل الـ Solution وقاعدة أعداد الجسور `0` و`1` و`2`.
-- [ ] الـ Candidate Bridge IDs غير الموجودة في الـ Solution بتتعامل كأنها `0`، والـ Unknown IDs بتعتبر Invalid.
-- [ ] طول الـ Chromosome وقاعدة الـ Gene-to-Edge mapping موضحين.
-- [ ] الـ Validation Report structure ومعنى كل Field موضحين.
-- [ ] مثال P1 كامل موجود، وبيشمل Puzzle وCandidate Bridges وSolution وChromosome وValidation Report.
-- [ ] Monzer وEbrahim وRovan وUI owner راجعوا الـ PR ووافقوا عليه بشكل صريح.
-- [ ] الـ PR اتعمله Merge إلى `develop` قبل Implementation PRs.
-- [ ] الفريق استلم إعلان إن الـ Data Model بقى Frozen.
+- [x] ملف `docs/DATA_MODEL.md` موجود في الـ Repository.
+- [x] الـ Puzzle والـ Island structures موضحين بكل أسماء الـ Fields والـ Types الصحيحة.
+- [x] الـ Candidate Bridge structure واتجاه الـ endpoints موضحين.
+- [x] قاعدة أقرب جزيرة ظاهرة (nearest visible island) مكتوبة بشكل صريح.
+- [x] الـ Deterministic Candidate Bridge ordering وطريقة ترقيم `E1..En` موضحين بمثال.
+- [x] تم توضيح تمثيل الـ Solution وقاعدة أعداد الجسور `0` و`1` و`2`.
+- [x] الـ Candidate Bridge IDs غير الموجودة في الـ Solution بتتعامل كأنها `0`، والـ Unknown IDs بتعتبر Invalid.
+- [x] طول الـ Chromosome وقاعدة الـ Gene-to-Edge mapping موضحين.
+- [x] الـ Validation Report structure ومعنى كل Field موضحين.
+- [x] مثال P1 كامل موجود، وبيشمل Puzzle وCandidate Bridges وSolution وChromosome وValidation Report.
+- [x] Monzer وEbrahim وRovan وUI owner راجعوا الـ PR ووافقوا عليه بشكل صريح.
+- [x] الـ PR اتعمله Merge إلى `develop` قبل Implementation PRs.
+- [x] الفريق استلم إعلان إن الـ Data Model بقى Frozen.

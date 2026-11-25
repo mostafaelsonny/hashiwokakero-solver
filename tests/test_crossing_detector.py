@@ -15,11 +15,6 @@ from tests.helpers import (
     pair_set,
 )
 
-pytestmark = pytest.mark.xfail(
-    raises=NotImplementedError,
-    reason="S1-05 not implemented yet - delete this marker when done",
-)
-
 CROSS = {frozenset({"E1", "E2"})}
 
 
