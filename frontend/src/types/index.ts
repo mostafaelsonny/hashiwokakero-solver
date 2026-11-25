@@ -1,9 +1,9 @@
-// Mirrors docs/DATA_MODEL.md. Field names are frozen once S1-02 is approved.
+// Domain types — mirrors docs/DATA_MODEL.md. Field names are frozen.
 export interface Island {
   id: string;
-  row: number; // 0-based, grows downward
-  col: number; // 0-based, grows to the right
-  required_bridges: number; // 1..8
+  row: number;
+  col: number;
+  required_bridges: number;
 }
 
 export interface Puzzle {

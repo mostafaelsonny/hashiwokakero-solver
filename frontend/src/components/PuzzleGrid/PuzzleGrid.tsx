@@ -1,5 +1,5 @@
-import React from "react";
-import type { CandidateBridge, Island } from "../types";
+import React, { useMemo } from "react";
+import type { CandidateBridge, Island } from "../../types";
 import "./PuzzleGrid.css";
 
 interface PuzzleGridProps {
@@ -16,15 +16,7 @@ interface PuzzleGridProps {
 const CELL_SIZE = 60;
 const ISLAND_RADIUS = 21;
 const PADDING = 34;
-const BRIDGE_GAP = 5; // pixel offset for double bridge lines
-
-function getIslandAt(islands: Island[], row: number, col: number): Island | undefined {
-  return islands.find((isl) => isl.row === row && isl.col === col);
-}
-
-function getIslandById(islands: Island[], id: string): Island | undefined {
-  return islands.find((isl) => isl.id === id);
-}
+const BRIDGE_GAP = 5;
 
 export function PuzzleGrid({
   rows,
@@ -39,6 +31,16 @@ export function PuzzleGrid({
   const svgWidth = cols * CELL_SIZE + PADDING * 2;
   const svgHeight = rows * CELL_SIZE + PADDING * 2;
 
+  const islandByPosition = useMemo(
+    () => new Map(islands.map((island) => [`${island.row}:${island.col}`, island])),
+    [islands]
+  );
+
+  const islandById = useMemo(
+    () => new Map(islands.map((island) => [island.id, island])),
+    [islands]
+  );
+
   function cellCenter(row: number, col: number): [number, number] {
     return [PADDING + col * CELL_SIZE + CELL_SIZE / 2, PADDING + row * CELL_SIZE + CELL_SIZE / 2];
   }
@@ -51,8 +53,8 @@ export function PuzzleGrid({
       const count = solvedBridgeCounts[edge.id] as number | undefined;
       if (!count) continue;
 
-      const fromIsland = getIslandById(islands, edge.from);
-      const toIsland = getIslandById(islands, edge.to);
+      const fromIsland = islandById.get(edge.from);
+      const toIsland = islandById.get(edge.to);
       if (!fromIsland || !toIsland) continue;
 
       const [x1, y1] = cellCenter(fromIsland.row, fromIsland.col);
@@ -70,7 +72,6 @@ export function PuzzleGrid({
           />
         );
       } else {
-        // Double bridge: draw two parallel lines offset perpendicular to the direction
         const isHorizontal = edge.orientation === "horizontal";
         const dx = isHorizontal ? 0 : BRIDGE_GAP;
         const dy = isHorizontal ? BRIDGE_GAP : 0;
@@ -134,7 +135,7 @@ export function PuzzleGrid({
                   height={CELL_SIZE}
                   className={`grid-cell ${isAlternate ? "cell-dark" : "cell-light"}`}
                   onClick={() => {
-                    const existing = getIslandAt(islands, r, c);
+                    const existing = islandByPosition.get(`${r}:${c}`);
                     if (existing) {
                       onIslandCycleValue(existing.id);
                     } else {
@@ -150,8 +151,7 @@ export function PuzzleGrid({
           {Array.from({ length: rows }, (_, r) =>
             Array.from({ length: cols }, (_, c) => {
               const [cx, cy] = cellCenter(r, c);
-              const hasIsland = !!getIslandAt(islands, r, c);
-              if (hasIsland) return null;
+              if (islandByPosition.has(`${r}:${c}`)) return null;
               return (
                 <circle
                   key={`dot-${r}-${c}`}
@@ -164,7 +164,7 @@ export function PuzzleGrid({
             })
           )}
 
-          {/* 🌉 Bridge Lines (rendered BELOW islands so islands appear on top) */}
+          {/* Bridge Lines (rendered BELOW islands) */}
           {bridgeLines}
 
           {/* Islands */}
@@ -180,14 +180,12 @@ export function PuzzleGrid({
                   onIslandRightClick(island.id);
                 }}
               >
-                {/* Accent ring */}
                 <circle
                   cx={cx}
                   cy={cy}
                   r={ISLAND_RADIUS + 3}
                   className="island-halo"
                 />
-                {/* Island piece */}
                 <circle
                   cx={cx}
                   cy={cy}
@@ -195,7 +193,6 @@ export function PuzzleGrid({
                   className="island-circle"
                   filter="url(#island-shadow)"
                 />
-                {/* Required bridges number */}
                 <text
                   x={cx}
                   y={cy + 6}
@@ -203,7 +200,6 @@ export function PuzzleGrid({
                 >
                   {island.required_bridges}
                 </text>
-                {/* Island ID tag */}
                 <text
                   x={cx}
                   y={cy + ISLAND_RADIUS + 13}
