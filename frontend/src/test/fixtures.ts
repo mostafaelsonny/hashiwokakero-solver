@@ -1,5 +1,5 @@
 // Reference puzzle P1 (see docs/DATA_MODEL.md). The only valid solution is [1,1,1,1].
-import type { Puzzle } from "./types";
+import type { Puzzle } from "../types";
 
 export const P1: Puzzle = {
   rows: 3,
